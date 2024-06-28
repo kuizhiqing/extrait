@@ -1,0 +1,7 @@
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out tls.key 
+
+openssl req -new -key tls.key -out tls.csr
+openssl x509 -req -days 365 -in tls.csr -signkey tls.key -out tls.crt
+
+openssl x509 -text -noout -in tls.crt
+
