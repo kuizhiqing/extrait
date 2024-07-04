@@ -1,0 +1,4 @@
+rm -f *.key
+rm -f *.csr
+rm -f *.crt
+rm -f ca.srl
