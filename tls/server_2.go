@@ -2,12 +2,22 @@ package main
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
 
 func main() {
+	// Load CA certificate
+	caCert, err := ioutil.ReadFile("ca.crt")
+	if err != nil {
+		log.Fatalf("Failed to read CA certificate: %v", err)
+	}
+	caCertPool := x509.NewCertPool()
+	caCertPool.AppendCertsFromPEM(caCert)
+
 	// Load server certificate and key
 	serverCert, err := tls.LoadX509KeyPair("server.crt", "server.key")
 	if err != nil {
@@ -17,6 +27,8 @@ func main() {
 	// Configure TLS with certificate verification
 	tlsConfig := &tls.Config{
 		Certificates: []tls.Certificate{serverCert},
+		ClientCAs:    caCertPool,
+		ClientAuth:   tls.RequireAndVerifyClientCert,
 	}
 
 	server := &http.Server{

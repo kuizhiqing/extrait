@@ -1,0 +1,7 @@
+openssl genpkey -algorithm RSA -out server.key 
+openssl req -new -key server.key -out server.csr -subj "/C=CN/ST=Beijing/L=Beijing/O=Company/OU=IT/CN=localhost" -addext "subjectAltName=DNS:localhost"
+openssl x509 -req -in server.csr -signkey server.key -out server.crt -days 365 -extfile <(printf "subjectAltName=DNS:localhost")
+
+cp server.crt ca.crt
+
+openssl x509 -text -noout -in server.crt
